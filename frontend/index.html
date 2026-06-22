@@ -78,6 +78,27 @@
         </div>
     </div>
 
+    <div class="cookie-section">
+        <div class="cookie-toggle" id="cookieToggle">
+            <i class="fas fa-cookie-bite"></i> <span id="cookieStatus">Cookies not set</span> <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="cookie-body hidden" id="cookieBody">
+            <p class="cookie-info">YouTube requires login cookies. Export cookies from your browser and upload here.</p>
+            <ol class="cookie-steps">
+                <li>Install <a href="https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid" target="_blank">Get cookies.txt</a> extension in Chrome</li>
+                <li>Go to <strong>youtube.com</strong> and make sure you're logged in</li>
+                <li>Click the extension icon → "Export" → save the file</li>
+                <li>Upload that file below</li>
+            </ol>
+            <div class="cookie-upload">
+                <input type="file" id="cookieFileInput" accept=".txt" />
+                <button id="cookieUploadBtn" class="cookie-btn"><i class="fas fa-upload"></i> Upload</button>
+            </div>
+            <div id="cookieMsg" class="cookie-msg hidden"></div>
+            <button id="cookieDeleteBtn" class="cookie-btn delete hidden"><i class="fas fa-trash"></i> Remove Cookies</button>
+        </div>
+    </div>
+
     <footer>
         <p>Made with <i class="fas fa-heart"></i> video downloader</p>
     </footer>
