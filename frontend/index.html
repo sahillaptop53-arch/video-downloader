@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Downloader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fab fa-youtube"></i>
+                <h1>Video Downloader</h1>
+            </div>
+            <p class="subtitle">Paste YouTube link, choose quality, download free</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-wrapper">
+                <i class="fas fa-link"></i>
+                <input type="text" id="videoUrl" placeholder="Paste YouTube link here..." />
+                <button id="clearBtn" class="clear-btn" title="Clear">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <button id="fetchBtn" class="fetch-btn">
+                <i class="fas fa-search"></i>
+                Get Video
+            </button>
+        </div>
+
+        <div id="loadingSpinner" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Fetching video information...</p>
+        </div>
+
+        <div id="errorMessage" class="error hidden">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorText"></span>
+        </div>
+
+        <div id="videoPreview" class="video-preview hidden">
+            <div class="thumbnail-wrapper">
+                <img id="thumbnail" src="" alt="" />
+                <div class="duration-badge"><i class="fas fa-clock"></i> <span id="duration">--:--</span></div>
+            </div>
+
+            <div class="video-info">
+                <h2 id="videoTitle">Video Title</h2>
+                <div class="channel-info">
+                    <div class="channel-icon"><i class="fas fa-user-circle"></i></div>
+                    <span id="channelName">Channel Name</span>
+                </div>
+                <div class="stats">
+                    <span><i class="fas fa-eye"></i> <span id="views">0</span> views</span>
+                    <span><i class="fas fa-thumbs-up"></i> <span id="likes">0</span> likes</span>
+                    <span><i class="far fa-calendar"></i> <span id="uploadDate">Date</span></span>
+                </div>
+            </div>
+
+            <div id="choiceSection" class="choice-section">
+                <div class="choice-header">
+                    <h3><i class="fas fa-download"></i> Choose Download Type</h3>
+                </div>
+                <div class="choice-grid" id="choiceGrid"></div>
+            </div>
+
+            <div id="qualitySection" class="quality-section hidden">
+                <div class="quality-header">
+                    <button id="backBtn" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h3 id="qualityTitle"><i class="fas fa-video"></i> Choose Quality</h3>
+                    <span class="quality-subtitle" id="qualitySubtitle">Select format to download</span>
+                </div>
+                <div class="quality-grid" id="qualityGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Made with <i class="fas fa-heart"></i> video downloader</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
