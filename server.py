@@ -35,6 +35,43 @@ def cleanup():
 
 atexit.register(cleanup)
 
+def get_cookie_file():
+    filepath = os.path.join(TEMP, 'cookies.txt')
+    return filepath if os.path.exists(filepath) else None
+
+@app.route('/api/cookies-status', methods=['GET'])
+def cookies_status():
+    return jsonify({'has_cookies': get_cookie_file() is not None})
+
+@app.route('/api/upload-cookies', methods=['POST'])
+def upload_cookies():
+    if 'cookies' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
+    f = request.files['cookies']
+    if f.filename == '':
+        return jsonify({'error': 'Empty filename'}), 400
+    filepath = os.path.join(TEMP, 'cookies.txt')
+    f.save(filepath)
+    return jsonify({'success': True, 'message': 'Cookies uploaded successfully'})
+
+@app.route('/api/delete-cookies', methods=['POST'])
+def delete_cookies():
+    filepath = os.path.join(TEMP, 'cookies.txt')
+    if os.path.exists(filepath):
+        os.remove(filepath)
+    return jsonify({'success': True, 'message': 'Cookies deleted'})
+
+def make_ydl_opts(extra=None):
+    opts = {'quiet': True, 'no_warnings': True, 'noplaylist': True}
+    cookie = get_cookie_file()
+    if cookie:
+        opts['cookiefile'] = cookie
+    else:
+        opts['extractor_args'] = {'youtube': {'player_client': ['android', 'web', 'ios']}}
+    if extra:
+        opts.update(extra)
+    return opts
+
 def find_ffmpeg():
     local_path = os.path.join(BASE, 'ffmpeg.exe')
     if os.path.exists(local_path):
@@ -75,9 +112,7 @@ def video_info():
     if cached:
         return jsonify(cached)
 
-    ydl_opts = {'quiet': True, 'no_warnings': True, 'noplaylist': True,
-        'extractor_args': {'youtube': {'player_client': ['android']}},
-    }
+    ydl_opts = make_ydl_opts()
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -200,9 +235,7 @@ def redirect_to_format(url, format_id):
     else:
         format_spec = 'best[ext=mp4]/best'
 
-    ydl_opts = {'quiet': True, 'no_warnings': True, 'format': format_spec, 'noplaylist': True,
-        'extractor_args': {'youtube': {'player_client': ['android']}},
-    }
+    ydl_opts = make_ydl_opts({'format': format_spec})
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -230,16 +263,12 @@ def download_and_merge(url, format_id):
 
     format_spec = f'{format_id}+bestaudio[ext=m4a]/bestaudio'
 
-    ydl_opts = {
-        'quiet': True,
-        'no_warnings': True,
+    ydl_opts = make_ydl_opts({
         'format': format_spec,
         'merge_output_format': 'mp4',
         'outtmpl': out_path,
-        'noplaylist': True,
         'ffmpeg_location': ffmpeg_path,
-        'extractor_args': {'youtube': {'player_client': ['android']}},
-    }
+    })
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
