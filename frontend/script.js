@@ -156,6 +156,72 @@ videoUrlInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') fetchBtn.click();
 });
 
+/* --- cookies --- */
+
+const cookieToggle = document.getElementById('cookieToggle');
+const cookieBody = document.getElementById('cookieBody');
+const cookieFileInput = document.getElementById('cookieFileInput');
+const cookieUploadBtn = document.getElementById('cookieUploadBtn');
+const cookieDeleteBtn = document.getElementById('cookieDeleteBtn');
+const cookieMsg = document.getElementById('cookieMsg');
+const cookieStatus = document.getElementById('cookieStatus');
+
+cookieToggle.addEventListener('click', () => {
+    cookieBody.classList.toggle('hidden');
+});
+
+function showCookieMsg(msg, isError) {
+    cookieMsg.textContent = msg;
+    cookieMsg.className = 'cookie-msg' + (isError ? ' error' : ' success');
+    cookieMsg.classList.remove('hidden');
+    setTimeout(() => cookieMsg.classList.add('hidden'), 5000);
+}
+
+async function checkCookies() {
+    try {
+        const res = await fetch('/api/cookies-status');
+        const data = await res.json();
+        if (data.has_cookies) {
+            cookieStatus.textContent = 'Cookies set ✓';
+            cookieStatus.style.color = '#00dba5';
+            cookieDeleteBtn.classList.remove('hidden');
+        } else {
+            cookieStatus.textContent = 'Cookies not set';
+            cookieStatus.style.color = '#ff6b6b';
+            cookieDeleteBtn.classList.add('hidden');
+        }
+    } catch (e) {}
+}
+
+cookieUploadBtn.addEventListener('click', async () => {
+    const file = cookieFileInput.files[0];
+    if (!file) { showCookieMsg('Please select a cookies.txt file first', true); return; }
+    const formData = new FormData();
+    formData.append('cookies', file);
+    try {
+        const res = await fetch('/api/upload-cookies', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.success) {
+            showCookieMsg('Cookies uploaded successfully! Server is ready.', false);
+            checkCookies();
+        } else {
+            showCookieMsg(data.error || 'Upload failed', true);
+        }
+    } catch (e) {
+        showCookieMsg('Upload error: ' + e.message, true);
+    }
+});
+
+cookieDeleteBtn.addEventListener('click', async () => {
+    try {
+        await fetch('/api/delete-cookies', { method: 'POST' });
+        showCookieMsg('Cookies removed', false);
+        checkCookies();
+    } catch (e) {}
+});
+
+checkCookies();
+
 /* --- choice buttons --- */
 
 function renderChoices() {
