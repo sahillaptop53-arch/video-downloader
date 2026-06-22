@@ -75,7 +75,9 @@ def video_info():
     if cached:
         return jsonify(cached)
 
-    ydl_opts = {'quiet': True, 'no_warnings': True, 'noplaylist': True}
+    ydl_opts = {'quiet': True, 'no_warnings': True, 'noplaylist': True,
+        'extractor_args': {'youtube': {'player_client': ['android']}},
+    }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -198,7 +200,9 @@ def redirect_to_format(url, format_id):
     else:
         format_spec = 'best[ext=mp4]/best'
 
-    ydl_opts = {'quiet': True, 'no_warnings': True, 'format': format_spec, 'noplaylist': True}
+    ydl_opts = {'quiet': True, 'no_warnings': True, 'format': format_spec, 'noplaylist': True,
+        'extractor_args': {'youtube': {'player_client': ['android']}},
+    }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -234,6 +238,7 @@ def download_and_merge(url, format_id):
         'outtmpl': out_path,
         'noplaylist': True,
         'ffmpeg_location': ffmpeg_path,
+        'extractor_args': {'youtube': {'player_client': ['android']}},
     }
 
     try:
